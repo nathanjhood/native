@@ -13,12 +13,12 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14'
+        node-version: 'lts'
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.0.2
       with:
-        vs-version: 16.8
+        vs-version: 17.0
 
     - name: Install node modules
       run: yarn --frozen-lockfile
