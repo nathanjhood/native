@@ -24,7 +24,7 @@ jobs:
       run: Set-ExecutionPolicy Unrestricted -Scope Process -Force; 
       
     - name: Resolve dependencies
-      run: iex (New-Object System.Net.WebClient).DownloadString('https://aka.ms/rnw-vs2022-deps.ps1');
+      run: iex (New-Object System.Net.WebClient).DownloadString("https://aka.ms/rnw-vs2022-deps.ps1");
 
     - name: Install node modules
       run: yarn --frozen-lockfile
