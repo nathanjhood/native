@@ -1,5 +1,13 @@
 {
 
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ],
+
     "files.insertFinalNewline": true,
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true,
@@ -95,6 +103,7 @@
     },
 
     "files.associations": {
+        "**.bundle": "javascript",
         "**.bash**": "shellscript",
         "**.cmake": "cmake",
         ".editorconfig": "editorconfig"
