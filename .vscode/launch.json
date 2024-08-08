@@ -1,12 +1,27 @@
 {
     "version": "0.2.0",
     "configurations": [
-      {
-        "name": "Debug Windows",
-        "cwd": "${workspaceFolder}",
-        "type": "reactnative",
-        "request": "launch",
-        "platform": "windows"
-      }
+        {
+            "name": "Debug Windows",
+            "cwd": "${workspaceFolder}",
+            "type": "reactnative",
+            "request": "launch",
+            "platform": "windows"
+        },
+        {
+            "name": "Debug MacOS",
+            "cwd": "${workspaceFolder}",
+            "type": "reactnative",
+            "request": "launch",
+            "platform": "macos"
+        },
+        {
+            "type": "cmake",
+            "request": "launch",
+            "name": "Debug portfile(s)",
+            "cmakeDebugType": "external",
+            "pipeName": "\\\\.\\pipe\\vcpkg_ext_portfile_dbg",
+            "preLaunchTask": "Debug vcpkg commands"
+        }
     ]
   }
