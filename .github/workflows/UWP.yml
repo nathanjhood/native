@@ -1,45 +1,47 @@
-name: UWP
-on: [pull_request]
+# This workflow will build all flavors of your React Native for Windows app
+# project every time changes are pushed to main. This checks that every
+# change builds on Windows.
+
+name: App CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  run-windows-tests:
-    name: Build & run tests
-    runs-on: windows-latest
-
+  # This job builds both Debug and Release versions of the app, for all
+  # supported (x86, x64, and ARM64) architectures. The x86 and x64
+  # versions will also be deployed to the build agent but not launched.
+  build:
+    name: Build
+    runs-on: windows-2019
+    strategy:
+      fail-fast: false
+      matrix:
+        architecture: [x86, x64, ARM64]
+        configuration: [Debug, Release]
     steps:
-    - uses: actions/checkout@v2
-      name: Checkout Code
+      - uses: actions/checkout@v2
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '20'
+      - name: Gather environment info
+        run: npx envinfo
 
-    - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v1.0.2
-      with:
-        vs-version: 16.8
+      - name: Yarn install
+        run: yarn install
 
-    - name: Resolve dependencies
-      run: |
-        Set-ExecutionPolicy Unrestricted -Scope Process -Force; 
-        iex (New-Object System.Net.WebClient).DownloadString("https://aka.ms/rnw-vs2022-deps.ps1");
+      - name: Run react-native run-windows
+        run: npx react-native run-windows --logging --no-packager --no-launch --arch ${{ matrix.architecture }} ${{ startsWith(matrix.architecture, 'ARM') && '--no-deploy' || '' }} ${{ matrix.configuration == 'Release' && '--release' || '' }}
 
-    - name: Install node modules
-      run: yarn --frozen-lockfile
-
-    - name: yarn build
-      run:  yarn build
-
-    - name: Run Windows x64 release
-      run: npx react-native run-windows --arch x64 --release --logging
-
-    # Workaround for a bug in package searching during deploy.
-    # The deploy script only searches windows/{*/bin/x64/Release,Release/*}, but the build step above placed the pakcages at windows/x64/Release.
-    # Copy the packages to Windows/Release before deploying.
-    - name: Deploy
-      shell: powershell
-      run: |
-        cd example
-        Copy-Item -Path windows\x64\Release -Recurse -Destination windows\
-        npx react-native run-windows --arch x64 --release --no-build --no-packager
+      # Workaround for a bug in package searching during deploy.
+      # The deploy script only searches windows/{*/bin/x64/Release,Release/*}, but the build step above placed the pakcages at windows/x64/Release.
+      # Copy the packages to Windows/Release before deploying.
+      - name: Deploy
+        shell: powershell
+        run: |
+          cd example
+          Copy-Item -Path windows\x64\Release -Recurse -Destination windows\
+          npx react-native run-windows --arch x64 --release --no-build --no-packager
